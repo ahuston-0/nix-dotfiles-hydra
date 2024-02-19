@@ -23,9 +23,6 @@
   };
 
   inputs = {
-    # can not cross compile all packages
-    patch-aarch64.url = "github:nixos/nixpkgs?rev=1cc67d9bf64b37aed93d7af74d5dfd3b76f665f8";
-
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     systems.url = "github:nix-systems/default";
     nix-index-database = {
@@ -65,16 +62,6 @@
       };
     };
 
-    mailserver = {
-      url = "gitlab:simple-nixos-mailserver/nixos-mailserver";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        nixpkgs-23_05.follows = "nixpkgs";
-        nixpkgs-23_11.follows = "nixpkgs";
-        utils.follows = "flake-utils";
-      };
-    };
-
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -95,17 +82,9 @@
         flake-utils.follows = "flake-utils";
       };
     };
-
-    c3d2-user-module = {
-      url = "git+https://gitea.c3d2.de/C3D2/nix-user-module.git";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        nixos-modules.follows = "nixos-modules";
-      };
-    };
   };
 
-  outputs = { self, nixpkgs-fmt, nix, home-manager, mailserver, nix-pre-commit, nixos-modules, nixpkgs, sops-nix, ... }@inputs:
+  outputs = { self, nixpkgs-fmt, nix, home-manager, nix-pre-commit, nixos-modules, nixpkgs, sops-nix, ... }@inputs:
     let
       inherit (nixpkgs) lib;
       systems = [
@@ -202,7 +181,6 @@
                   ];
                 }
               ] ++ (if server then [
-                mailserver.nixosModules.mailserver
                 ./systems/programs.nix
                 ./systems/configuration.nix
                 ./systems/${hostname}/hardware.nix
