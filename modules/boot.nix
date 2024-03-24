@@ -51,7 +51,6 @@ in
     };
 
     zfs = lib.mkIf (cfg.filesystem == "zfs") {
-      enableUnstable = true;
       devNodes = "/dev/disk/by-id/";
       forceImportRoot = true;
     };

@@ -2,31 +2,33 @@
   description = "NixOS configuration for RAD-Development Servers";
 
   nixConfig = {
-    trusted-users = [ "root" ];
     substituters = [
       "https://cache.nixos.org/?priority=1&want-mass-query=true"
       "https://attic.alicehuston.xyz/cache-nix-dot?priority=4&want-mass-query=true"
       "https://cache.alicehuston.xyz/?priority=5&want-mass-query=true"
       "https://nix-community.cachix.org/?priority=10&want-mass-query=true"
     ];
-
     trusted-substituters = [
       "https://cache.nixos.org"
       "https://attic.alicehuston.xyz/cache-nix-dot"
       "https://cache.alicehuston.xyz"
       "https://nix-community.cachix.org"
     ];
-
     trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "cache.alicehuston.xyz:SJAm8HJVTWUjwcTTLAoi/5E1gUOJ0GWum2suPPv7CUo=%"
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "cache-nix-dot:0hp/F6mUJXNyZeLBPNBjmyEh8gWsNVH+zkuwlWMmwXg="
     ];
+    trusted-users = [
+      "root"
+      "@wheel"
+    ];
   };
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-23.11";
     systems.url = "github:nix-systems/default";
     nix-index-database = {
       url = "github:Mic92/nix-index-database";
@@ -65,7 +67,7 @@
       url = "github:Mic92/sops-nix";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        nixpkgs-stable.follows = "nixpkgs";
+        nixpkgs-stable.follows = "nixpkgs-stable";
       };
     };
 
@@ -75,6 +77,26 @@
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
       };
+    };
+
+    wired-notify = {
+      url = "github:Toqozz/wired-notify";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        rust-overlay.follows = "rust-overlay";
+      };
+    };
+
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs = {
+        flake-utils.follows = "flake-utils";
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
+
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware";
     };
 
     attic = {
@@ -92,9 +114,11 @@
       nix,
       home-manager,
       nix-pre-commit,
+      nixos-hardware,
       nixos-modules,
       nixpkgs,
       sops-nix,
+      wired-notify,
       ...
     }@inputs:
     let
@@ -160,7 +184,7 @@
         repos = [
           {
             repo = "https://gitlab.com/vojko.pribudic/pre-commit-update";
-            rev = "bbd69145df8741f4f470b8f1cf2867121be52121";
+            rev = "bd6e40ff90e582fcb7b81ffafdf41f9d6cac7131";
             hooks = [
               {
                 id = "pre-commit-update";
@@ -208,21 +232,14 @@
               server ? true,
               sops ? true,
               system ? "x86_64-linux",
-              owner ? null,
             }:
             lib.nixosSystem {
               system = "x86_64-linux";
-              # pkgs = lib.mkIf (system != "x86_64-linux") (import inputs.patch-aarch64 { inherit (nixpkgs) config; inherit system; }).legacyPackages.${system};
               modules =
                 [
                   nixos-modules.nixosModule
                   sops-nix.nixosModules.sops
                   { config.networking.hostName = "${hostname}"; }
-                  {
-                    nixpkgs.overlays = [
-                      (_self: super: { libgit2 = super.libgit2.overrideAttrs { doCheck = false; }; })
-                    ];
-                  }
                 ]
                 ++ (
                   if server then
@@ -249,13 +266,7 @@
                     "${toString nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
                 ++ (
                   if home then
-                    (map
-                      (user: {
-                        home-manager.users.${user} = import ./users/${user}/home.nix;
-                        home-manager.users.root = lib.mkIf (owner == user) (import ./users/${user}/home.nix);
-                      })
-                      users
-                    )
+                    (map (user: { home-manager.users.${user} = import ./users/${user}/home.nix; }) users)
                   else
                     [ ]
                 )
@@ -320,13 +331,11 @@
                       hostname = system;
                       server = false;
                       users = [ user ];
-                      owner = user;
                     }
                     // builtins.removeAttrs (import ./users/${user}/systems/${system} { inherit inputs; }) [
                       "hostname"
                       "server"
                       "users"
-                      "owner"
                     ]
                   );
                 })

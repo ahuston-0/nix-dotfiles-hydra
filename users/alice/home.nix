@@ -1,6 +1,8 @@
 { pkgs, ... }:
 
 {
+  imports = [ ./home/zsh.nix ];
+
   home = {
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
@@ -52,9 +54,13 @@
   };
 
   programs = {
-    zsh.enable = true;
     starship.enable = true;
     fzf = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+
+    nix-index = {
       enable = true;
       enableZshIntegration = true;
     };
@@ -72,6 +78,8 @@
       };
     };
   };
+
+  services.ssh-agent.enable = true;
 
   home.stateVersion = "23.11";
 }

@@ -6,6 +6,7 @@ keys:
   # Generate AGE keys from SSH keys with:
   #   ssh-keygen -A
   #   nix-shell -p ssh-to-age --run 'cat /etc/ssh/ssh_host_ed25519_key.pub | ssh-to-age'
+  - &artemision age1jd2dcpykagz20kpk2kkchte3augqncwfn6nywursx0dkfyze6feqdzxkq2
   - &palatine-hill age1z8q02wdp0a2ep5uuffgfeqlfam4ztl95frhw5qhnn6knn0rrmcnqk5evej
   - &jeeves age128ehc0ssgwnuv4r8ayfyu7r80e82xrkmv63g7h9y9q4mhk4w9dyqfymc2w
   - &jeeves-jr age1lffr5f5nz0nrenv3ekgy27e8sztsx4gfp3hfymkz77mqaa5a4gts0ncrrh
@@ -36,20 +37,32 @@ creation_rules:
         age:
           - *jeeves-jr
 
-  - path_regex: systems/palatine-hill/secrets\.yaml$
-    key_groups:
-      - pgp: *admins
-        age:
-          - *palatine-hill
-
-  - path_regex: users/alice/secrets\.yaml$
+  - path_regex: users/alice/secrets\.yaml$ 
     key_groups:
       - pgp:
           - *admin_alice
-        age: *servers
+        age:
+          - *palatine-hill
+          - *jeeves
+          - *jeeves-jr
+          - *artemision
+
+  - path_regex: systems/palatine-hill/secrets\.yaml$
+    key_groups:
+      - pgp:
+          - *admin_alice
+        age:
+          - *palatine-hill
+
+  - path_regex: users/alice/systems/artemision/secrets\.yaml$
+    key_groups:
+      - pgp:
+          - *admin_alice
+        age:
+          - *artemision
     
   - path_regex: users/richie/secrets\.yaml$
     key_groups:
       - pgp:
           - *admin_richie
-        age: *servers
+        age: *servers 
