@@ -315,5 +315,4 @@
         }
       ) sops-nix.packages;
     };
-
 }
