@@ -221,6 +221,8 @@ in
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINHtwvfXg/QFjMAjC4JRjlMAaGPgEfSyhpprNpqbGSJn hydra-queue-runner@palatine-hill"
   ];
 
+  system.autoUpgrade.flake = "github:ahuston-0/nix-dotfiles-hydra";
+
   sops = {
     defaultSopsFile = ./secrets.yaml;
     secrets =
