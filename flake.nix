@@ -167,36 +167,18 @@
           [ ];
       fileList = dir: map (file: ./. + "/${dir}/${file}") (ls dir);
 
-
       config = {
         repos = [
           {
-            repo = "https://gitlab.com/vojko.pribudic/pre-commit-update";
-            rev = "2d784f3bebf8a39417b70e77062135e3282f1181";
-            hooks = [
-              {
-                id = "pre-commit-update";
-                args = [ "--dry-run" ];
-              }
-            ];
-          }
-          {
             repo = "local";
             hooks = [
-              # {
-              #   id = "nixfmt check";
-              #   entry = "${nixpkgs.legacyPackages.x86_64-linux.nixfmt-rfc-style}/bin/nixfmt";
-              #   args = [ "--check" ];
-              #   language = "system";
-              #   files = "\\.nix";
-              # }
-              # {
-              #   id = "check";
-              #   entry = "nix eval";
-              #   language = "system";
-              #   files = "\\.nix";
-              #   pass_filenames = false;
-              # }
+              {
+                id = "nix fmt check";
+                entry = "${outputs.formatter.x86_64-linux}/bin/nixfmt";
+                args = [ "--check" ];
+                language = "system";
+                files = "\\.nix";
+              }
             ];
           }
         ];
