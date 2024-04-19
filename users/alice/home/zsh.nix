@@ -1,4 +1,4 @@
-{ pkg, ... }:
+{ pkgs, ... }:
 {
 
   programs.zsh = {
@@ -24,7 +24,7 @@
       {
         name = "zsh-nix-shell";
         file = "nix-shell.plugin.zsh";
-        src = pkg.fetchFromGitHub {
+        src = pkgs.fetchFromGitHub {
           owner = "chisui";
           repo = "zsh-nix-shell";
           rev = "v0.8.0";
