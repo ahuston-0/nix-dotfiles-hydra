@@ -304,10 +304,7 @@
         with nixpkgs.legacyPackages.${system};
         mkShell {
           sopsPGPKeyDirs = [ "./keys" ];
-          nativeBuildInputs = [
-            apacheHttpd
-            sopsPkgs.sops-import-keys-hook
-          ];
+          nativeBuildInputs = [ sopsPkgs.sops-import-keys-hook ];
           packages = [
             self.formatter.${system}
             nixpkgs.legacyPackages.${system}.deadnix
