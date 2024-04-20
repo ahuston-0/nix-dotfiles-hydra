@@ -52,7 +52,7 @@ let
   jobOfRef =
     name:
     { ref, ... }:
-    if isNull (builtins.match "^refs/heads/(.*)$" builtins.trace ref) then
+    if isNull (builtins.match "^refs/heads/(.*)$" ref) then
       null
     else
       {
