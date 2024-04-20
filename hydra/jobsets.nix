@@ -25,7 +25,7 @@ let
     };
 
   prs = builtins.fromJSON (builtins.readFile pulls);
-  refs = builtins.fromJSON (builtins.readFile refs);
+  refs = builtins.fromJSON (builtins.readFile branches);
   repo = "ahuston-0/nix-dotfiles-hydra";
 
   makeJob =
