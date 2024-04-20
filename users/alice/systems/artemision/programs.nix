@@ -45,6 +45,5 @@
     wl-clipboard
     zoom-us
     zoxide
-    zsh-nix-shell
   ];
 }
