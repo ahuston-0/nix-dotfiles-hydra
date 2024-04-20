@@ -1,8 +1,8 @@
 {
   nixpkgs,
   pulls,
-  feature-branches,
-  flake-update-branches,
+  branches,
+
   ...
 }:
 let
@@ -25,8 +25,7 @@ let
     };
 
   prs = builtins.fromJSON (builtins.readFile pulls);
-  branches = builtins.fromJSON (builtins.readFile feature-branches);
-  update = builtins.fromJSON (builtins.readFile flake-update-branches);
+  refs = builtins.fromJSON (builtins.readFile refs);
   repo = "ahuston-0/nix-dotfiles-hydra";
 
   makeJob =
@@ -145,10 +144,7 @@ in
   jobsets = makeSpec (
     builtins.listToAttrs (map ({ name, value }: jobOfPR name value) (attrsToList (readJSONFile prs)))
     // builtins.listToAttrs (
-      mapFilter ({ name, value }: jobOfRef name value) (attrsToList (readJSONFile branches))
-    )
-    // builtins.listToAttrs (
-      mapFilter ({ name, value }: jobOfRef name value) (attrsToList (readJSONFile update))
+      mapFilter ({ name, value }: jobOfRef name value) (attrsToList (readJSONFile refs))
     )
     // {
       main = makeJob {
