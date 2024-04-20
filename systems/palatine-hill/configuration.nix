@@ -231,7 +231,7 @@ in
 
   system.autoUpgrade.flake = "github:ahuston-0/nix-dotfiles-hydra";
 
-  gc.options = "--delete-older-than 150d";
+  nix.gc.options = "--delete-older-than 150d";
 
   sops = {
     defaultSopsFile = ./secrets.yaml;
