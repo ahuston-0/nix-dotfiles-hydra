@@ -229,7 +229,7 @@ in
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINHtwvfXg/QFjMAjC4JRjlMAaGPgEfSyhpprNpqbGSJn hydra-queue-runner@palatine-hill"
   ];
 
-  system.autoUpgrade.flake = "github:ahuston-0/nix-dotfiles-hydra";
+  system.autoUpgrade.flake = lib.mkForce "github:ahuston-0/nix-dotfiles-hydra";
 
   nix.gc.options = "--delete-older-than 150d";
 
