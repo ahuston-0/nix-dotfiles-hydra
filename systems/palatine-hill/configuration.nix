@@ -256,7 +256,8 @@ in
         "alice/gha-hydra-token" = {
           sopsFile = ../../users/alice/secrets.yaml;
           owner = "hydra";
-          mode = "400";
+          group = "hydra";
+          mode = "440";
         };
       }
       // keygen "zfs-attic-key"
