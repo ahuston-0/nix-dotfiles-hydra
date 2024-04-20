@@ -40,7 +40,7 @@
       max-free = ${toString (10 * 1024 * 1024 * 1024)}
     '';
 
-    gc = {
+    gc = lib.mkDefault {
       automatic = true;
       dates = "weekly";
       options = "--delete-older-than 30d";
