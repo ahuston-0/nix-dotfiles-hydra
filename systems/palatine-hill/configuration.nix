@@ -238,8 +238,6 @@ in
 
   nix.gc.options = "--delete-older-than 150d";
 
-  nix.gc.options = "--delete-older-than 150d";
-
   sops = {
     defaultSopsFile = ./secrets.yaml;
     secrets =
