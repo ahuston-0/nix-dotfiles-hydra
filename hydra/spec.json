@@ -26,14 +26,9 @@
       "value": "ahuston-0 nix-dotfiles-hydra",
       "emailresponsible": false
     },
-    "feature-branches": {
+    "branches": {
       "type": "github_refs",
-      "value": "ahuston-0 nix-dotfiles-hydra heads - feature",
-      "emailresponsible": false
-    },
-    "flake-update-branches": {
-      "type": "github_refs",
-      "value": "ahuston-0 nix-dotfiles-hydra heads - update_flake_lock_action",
+      "value": "ahuston-0 nix-dotfiles-hydra heads -",
       "emailresponsible": false
     }
   }
