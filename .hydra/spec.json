@@ -4,7 +4,7 @@
   "description": "system flake",
   "nixexprinput": "nixexpr",
   "nixexprpath": ".hydra/jobsets.nix",
-  "checkinterval": 3600,
+  "checkinterval": 20,
   "schedulingshares": 100,
   "enableemail": false,
   "emailoverride": "",
@@ -24,6 +24,16 @@
     "pulls": {
       "type": "githubpulls",
       "value": "ahuston-0 nix-dotfiles-hydra",
+      "emailresponsible": false
+    },
+    "feature-branches": {
+      "type": "github_refs",
+      "value": "ahuston-0 nix-dotfiles-hydra heads - feature",
+      "emailresponsible": false
+    },
+    "flake-update-branches": {
+      "type": "github_refs",
+      "value": "ahuston-0 nix-dotfiles-hydra heads - update_flake_lock_action",
       "emailresponsible": false
     }
   }
