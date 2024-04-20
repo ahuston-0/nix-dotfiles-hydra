@@ -151,6 +151,12 @@ in
       buildMachinesFiles = [ ];
       minimumDiskFree = 50;
       minimumDiskFreeEvaluator = 100;
+      extraConfig = ''
+        <git-input>
+          timeout = 3600
+        </git-input>
+        Include ${config.sops.secrets."alice/gha-hydra-token".path}
+      '';
     };
 
     nix-serve = {
@@ -247,6 +253,11 @@ in
         "attic/secret-key".owner = "root";
         "attic/database-url".owner = "root";
         "postgres/init".owner = "postgres";
+        "alice/gha-hydra-token" = {
+          sopsFile = ../../users/alice/secrets.yaml;
+          owner = "hydra";
+          mode = "400";
+        };
       }
       // keygen "zfs-attic-key"
       // keygen "zfs-backup-key"
