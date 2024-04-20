@@ -30,6 +30,7 @@ let
 
   desc = prJobsets // {
     "main" = mkFlakeJobset "main";
+    "feature/upsync" = mkFlakeJobset "feature/upsync";
   };
 
   log = {
