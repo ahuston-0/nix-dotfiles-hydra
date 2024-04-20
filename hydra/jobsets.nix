@@ -72,76 +72,7 @@ let
   attrsToList = l: builtins.attrValues (builtins.mapAttrs (name: value: { inherit name value; }) l);
   readJSONFile = f: builtins.fromJSON (builtins.readFile f);
   mapFilter = f: l: builtins.filter (x: !(isNull x)) (map f l);
-in
-# throwJSON = x: throw (builtins.toJSON x);
-# prJobsets = pkgs.lib.mapAttrs (num: info: {
-#   enabled = 1;
-#   hidden = false;
-#   description = "PR ${num}: ${info.title}";
-#   checkinterval = 60;
-#   schedulingshares = 20;
-#   enableemail = false;
-#   emailoverride = "";
-#   keepnr = 1;
-#   type = 1;
-#   flake = "github:ahuston-0/nix-dotfiles-hydra/pull/${num}/head";
-# }) prs;
-# branchJobsets = pkgs.lib.mapAttrs (num: info: {
-#   enabled = 1;
-#   hidden = false;
-#   description = "PR ${num}: ${info.title}";
-#   checkinterval = 60;
-#   schedulingshares = 20;
-#   enableemail = false;
-#   emailoverride = "";
-#   keepnr = 1;
-#   type = 1;
-#   flake = "github:ahuston-0/nix-dotfiles-hydra/pull/${num}/head";
-# }) branches;
-# updateJobsets = pkgs.lib.mapAttrs (num: info: {
-#   enabled = 1;
-#   hidden = false;
-#   description = "PR ${num}: ${info.title}";
-#   checkinterval = 60;
-#   schedulingshares = 20;
-#   enableemail = false;
-#   emailoverride = "";
-#   keepnr = 1;
-#   type = 1;
-#   flake = "github:ahuston-0/nix-dotfiles-hydra/pull/${num}/head";
-# }) prs;
-# mkFlakeJobset = branch: {
-#   description = "Build ${branch}";
-#   checkinterval = "3600";
-#   enabled = "1";
-#   schedulingshares = 100;
-#   enableemail = false;
-#   emailoverride = "";
-#   keepnr = 3;
-#   hidden = false;
-#   type = 1;
-#   flake = "github:ahuston-0/nix-dotfiles-hydra/tree/${branch}";
-# };
-# desc = prJobsets // {
-#   "main" = mkFlakeJobset "main";
-#   "feature-upsync" = mkFlakeJobset "feature/upsync";
-# };
-# log = {
-#   pulls = prs;
-#   jobsets = desc;
-# };
-{
-  # jobsets = pkgs.runCommand "spec-jobsets.json" { } ''
-  #   cat >$out <<EOF
-  #   ${builtins.toJSON desc}
-  #   EOF
-  #   # This is to get nice .jobsets build logs on Hydra
-  #   cat >tmp <<EOF
-  #   ${builtins.toJSON log}
-  #   EOF
-  #   ${pkgs.jq}/bin/jq . tmp
-  # '';
-  jobsets = makeSpec (
+  jobs = makeSpec (
     builtins.listToAttrs (map ({ name, value }: jobOfPR name value) (attrsToList prs))
     // builtins.listToAttrs (mapFilter ({ name, value }: jobOfRef name value) (attrsToList refs))
     // {
@@ -153,4 +84,23 @@ in
       };
     }
   );
+  log = {
+    jobsets = jobs;
+  };
+in
+{
+  jobsets =
+    jobs
+    // pkgs.runCommand "spec-jobsets.json" { } ''
+      cat >$out <<EOF
+      ${prs}
+      ${refs}
+      ${jobs}
+      EOF
+      # This is to get nice .jobsets build logs on Hydra
+      cat >tmp <<EOF
+      ${builtins.toJSON log}
+      EOF
+      ${pkgs.jq}/bin/jq . tmp
+    '';
 }
