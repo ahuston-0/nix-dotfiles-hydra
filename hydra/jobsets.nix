@@ -56,7 +56,7 @@ let
       null
     else
       {
-        name = "branch-${name}";
+        name = (builtins.replaceStrings [ "/" ] [ "-" ] "branch-${name}");
         value = makeJob {
           description = "Branch ${name}";
           flake = "git+ssh://git@github.com/${repo}?ref=${ref}";
