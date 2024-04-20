@@ -24,8 +24,8 @@ let
       contents = builtins.toJSON contents;
     };
 
-  prs = builtins.fromJSON (builtins.readFile pulls);
-  refs = builtins.fromJSON (builtins.readFile branches);
+  prs = readJSONFile pulls;
+  refs = readJSONFile branches;
   repo = "ahuston-0/nix-dotfiles-hydra";
 
   makeJob =
@@ -65,8 +65,8 @@ let
   jobOfPR = id: info: {
     name = "pr-${id}";
     value = makeJob {
-      description = "PR ${id}: ${info.${id}.title}";
-      flake = "git+ssh://git@github.com/${info.${id}.head.repo.full_name}?ref=${info.${id}.head.ref}";
+      description = "PR ${id}: ${info.title}";
+      flake = "git+ssh://git@github.com/${info.head.repo.full_name}?ref=${info.head.ref}";
     };
   };
   attrsToList = l: builtins.attrValues (builtins.mapAttrs (name: value: { inherit name value; }) l);
