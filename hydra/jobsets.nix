@@ -142,10 +142,8 @@ in
   #   ${pkgs.jq}/bin/jq . tmp
   # '';
   jobsets = makeSpec (
-    builtins.listToAttrs (map ({ name, value }: jobOfPR name value) (attrsToList (readJSONFile prs)))
-    // builtins.listToAttrs (
-      mapFilter ({ name, value }: jobOfRef name value) (attrsToList (readJSONFile refs))
-    )
+    builtins.listToAttrs (map ({ name, value }: jobOfPR name value) (attrsToList prs))
+    // builtins.listToAttrs (mapFilter ({ name, value }: jobOfRef name value) (attrsToList refs))
     // {
       main = makeJob {
         description = "main";
