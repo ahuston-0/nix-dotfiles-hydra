@@ -202,9 +202,17 @@ in
   # configured default webstore for this on root user separately
   systemd.services.attic-watch-store = {
     wantedBy = [ "multi-user.target" ];
-    after = [ "network-online.target" ];
-    requires = [ "network-online.target" ];
-    description = "Upload all store content to binary catch";
+    after = [
+      "network-online.target"
+      "docker.service"
+      "atticd.service"
+    ];
+    requires = [
+      "network-online.target"
+      "docker.service"
+      "atticd.service"
+    ];
+    description = "Upload all store content to binary cache";
     serviceConfig = {
       User = "root";
       Restart = "always";
