@@ -25,7 +25,7 @@ let
     keepnr = 3;
     hidden = false;
     type = 1;
-    flake = "github:ahuston-0/nix-dotfiles-hydra/${branch}";
+    flake = "github:ahuston-0/nix-dotfiles-hydra/tree/${branch}";
   };
 
   desc = prJobsets // {
