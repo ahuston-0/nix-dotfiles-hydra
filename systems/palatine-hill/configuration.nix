@@ -8,7 +8,6 @@
   imports = [
     ./attic.nix
     ./docker
-    ./docker.nix
     ./hydra.nix
     ./minio.nix
     ./networking.nix
