@@ -26,7 +26,7 @@ jobs:
       - name: Calculate post-drv
         run: nix ./utils/eval-to-drv.sh post
       - name: Calculate diff
-        run: nix ./utils/diff-evals
+        run: nix ./utils/diff-evals.sh
       - name: Read diff into environment
         uses: andstor/file-reader-action@v1
         id: post_diff
