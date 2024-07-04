@@ -10,13 +10,13 @@ jobs:
     if: github.ref == 'refs/heads/main' # ensure workflow_dispatch only runs on main
     steps:
       - uses: actions/checkout@v4
-      - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: Install Nix
         uses: cachix/install-nix-action@v24
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
           install_url: https://releases.nixos.org/nix/nix-2.19.0/install
+      - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: Calculate pre-drv
         run: nix ./utils/eval-to-drv.sh pre
       - name: Pull latest docker images
