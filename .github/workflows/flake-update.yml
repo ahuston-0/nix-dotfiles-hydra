@@ -10,18 +10,45 @@ jobs:
     if: github.ref == 'refs/heads/main' # ensure workflow_dispatch only runs on main
     steps:
       - uses: actions/checkout@v4
+      - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: Install Nix
         uses: cachix/install-nix-action@v24
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
           install_url: https://releases.nixos.org/nix/nix-2.19.0/install
+      - name: Calculate pre-drv
+        run: nix ./utils/eval-to-drv.sh pre
       - name: Pull latest docker images
         run: nix ./utils/fetch-docker.sh
+      - name: Update flake.lock (part 1)
+        run: nix flake update
+      - name: Calculate post-drv
+        run: nix ./utils/eval-to-drv.sh post
+      - name: Calculate diff
+        run: nix ./utils/diff-evals
+      - name: Read diff into environment
+        uses: andstor/file-reader-action@v1
+        id: post_diff
+        with:
+          path: "post-diff"
+      - name: Restore flake.lock for next step
+        run: git restore flake.lock
       - name: Update flake.lock
         id: update
         uses: DeterminateSystems/update-flake-lock@main
         with:
+          # token: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
+          pr-body: |
+            Automated changes by the [update-flake-lock](https://github.com/DeterminateSystems/update-flake-lock) GitHub Action.
+
+            ```
+            {{ env.GIT_COMMIT_MESSAGE }}
+            ```
+
+            ```
+            {{ env.steps.post_diff.outputs.contents }}
+            ```
           pr-labels: |                  # Labels to be set on the PR
             dependencies
             automated

@@ -17,3 +17,8 @@ result-*
 
 # allows test file in reopsitory
 test.*
+
+# flake update artifacts
+pre-drv
+post-drv
+post-diff
