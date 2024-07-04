@@ -15,7 +15,8 @@ parent_path=$(dirname "$script_path")
 # format: <image name>,<image tag>,<image architecture>,<os>,<relpath>
 images=(
     # commented out until palatine-hill docker changes are live
-    #"nextcloud,apache,amd64,linux,/systems/palatine-hill/docker/nextcloud-image/nextcloud-apache.nix"
+    "nextcloud,apache,amd64,linux,/systems/palatine-hill/docker/nextcloud-image/nextcloud-apache.nix"
+
 )
 IFS=","
 while read -r name tag arch os relpath; do
