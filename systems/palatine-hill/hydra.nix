@@ -52,6 +52,13 @@
         <git-input>
           timeout = 3600
         </git-input>
+        <githubstatus>
+          jobs = build-fork-hydra:pr-.*:hosts\..*
+          ## This example will match all jobs
+          #jobs = .*
+          inputs = nixexpr
+          excludeBuildFromContext = 1
+        </githubstatus>
         Include ${config.sops.secrets."alice/gha-hydra-token".path}
       '';
     };
