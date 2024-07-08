@@ -53,9 +53,8 @@
           timeout = 3600
         </git-input>
         <githubstatus>
-          jobs = build-fork-hydra:pr-.*:hosts\..*
-          ## This example will match all jobs
-          #jobs = .*
+          # check hosts and any declared checks
+          jobs = (build-fork-hydra):pr-.*:(hosts|checks.*)
           inputs = nixexpr
           useShortContext = true
           excludeBuildFromContext = 1
